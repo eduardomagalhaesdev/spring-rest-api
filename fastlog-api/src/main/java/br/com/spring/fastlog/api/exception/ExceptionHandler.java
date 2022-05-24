@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import br.com.spring.fastlog.domain.exception.NegocioException;
+
 @ControllerAdvice	//Tratamento global de Exceções -> Qualquer controlador que passar por uma exception ela deverá ser tratada aqui.
 public class ExceptionHandler extends ResponseEntityExceptionHandler {
 	
@@ -46,6 +48,20 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 		problema.setCampos(campos);
 		
 		return super.handleExceptionInternal(ex, problema, headers, status, request);
+	}
+	
+	@org.springframework.web.bind.annotation.ExceptionHandler(NegocioException.class)
+	public ResponseEntity<Object> handleNegocio(NegocioException ex, WebRequest request){
+		
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		
+		Problema problema = new Problema();
+		problema.setStatus(status.value());
+		problema.setDataHora(OffsetDateTime.now());
+		problema.setTitulo(ex.getMessage());
+		
+		
+		return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
 	}
 
 }

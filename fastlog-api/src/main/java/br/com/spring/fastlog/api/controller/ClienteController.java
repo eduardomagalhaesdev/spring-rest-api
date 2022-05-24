@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.spring.fastlog.domain.model.Cliente;
 import br.com.spring.fastlog.domain.repository.ClienteRepository;
+import br.com.spring.fastlog.domain.service.CatalogoClienteService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -28,8 +28,8 @@ import lombok.AllArgsConstructor;
 public class ClienteController {
 
 	// @Autowired //instancia injetada gerida pelo Spring
-
 	private ClienteRepository clienteRepository;
+	private CatalogoClienteService catalogoClienteService;
 
 	@GetMapping
 	public List<Cliente> listar() {
@@ -43,6 +43,13 @@ public class ClienteController {
 
 	@GetMapping("/{clienteId}")
 	public ResponseEntity<Cliente> findById(@PathVariable Long clienteId) {
+		/*return clienteRepository.findById(clienteId)
+		 * .map(cliente -> ResponseEntity.ok(cliente))
+		 * .map(ResponseEntity::ok)
+		 * .orElse(ResponseEntity.notFound().build());*/
+		   
+		
+		
 
 		// if (!clienteRepository.findById(clienteId).isEmpty()) {
 
@@ -61,7 +68,7 @@ public class ClienteController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public Cliente salvar(@RequestBody @Valid Cliente cliente) {
 
-		return clienteRepository.save(cliente);
+		return catalogoClienteService.salvar(cliente);
 	}
 
 	@PutMapping("/{clienteId}")
@@ -70,7 +77,7 @@ public class ClienteController {
 		if (clienteRepository.existsById(clienteId)) {
 
 			cliente.setId(clienteId);
-			clienteRepository.save(cliente);
+			catalogoClienteService.salvar(cliente);
 			return ResponseEntity.ok(cliente);
 		}
 		return ResponseEntity.notFound().build();
@@ -82,7 +89,7 @@ public class ClienteController {
 			return ResponseEntity.notFound().build();
 		}
 
-		clienteRepository.deleteById(clienteId);
+		catalogoClienteService.excluir(clienteId);
 		return ResponseEntity.noContent().build();
 	}
 
