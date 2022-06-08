@@ -47,9 +47,15 @@ public class ClienteController {
 		 * .map(cliente -> ResponseEntity.ok(cliente))
 		 * .map(ResponseEntity::ok)
 		 * .orElse(ResponseEntity.notFound().build());*/
-		   
 		
 		
+		/*	Expressões Lambdas
+		 * 
+		 * Calculator cal =  (parametros) -> corpo{}
+ 		 * 
+		 * 
+		 * 
+		 * */		
 
 		// if (!clienteRepository.findById(clienteId).isEmpty()) {
 
